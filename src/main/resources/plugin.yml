@@ -1,0 +1,7 @@
+name: CSMultiblock
+version: '1.0'
+main: org.evasive.me.cSMultiblock.CSMultiblock
+api-version: '1.21'
+commands:
+  admingive:
+    description: admin give command
