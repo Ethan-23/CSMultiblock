@@ -34,7 +34,14 @@ public class PreviewPackets {
         addToMap(player, location, material, entityID);
 
         blockDisplayPacket(player, entityID, location);
-        appearAnimation(player, entityID, material);
+
+        sendEntityMetaDataPacket(player, entityID, getDefaultData(material));
+
+        sendNothingBlock(player, entityID);
+
+        appearAnimation(player, entityID);
+
+
         return entityID;
     }
 
@@ -64,7 +71,7 @@ public class PreviewPackets {
     }
 
     public void sendNothingBlock(Player player, int entityID){
-        sendEntityMetaDataPacket(player, entityID, getMatchingData());
+        sendEntityMetaDataPacket(player, entityID, getBlankData());
     }
 
     public void sendCompleteBlock(Player player, int entityID){
@@ -96,21 +103,24 @@ public class PreviewPackets {
         );
     }
 
-
-
     // Different Meta Data Presets
+    private final byte GLOW_METADATA = 0x40;
 
     public List<EntityData> getIncorrectData(){
+        int RED_COLOR = 11546150;
         return List.of(
-                new EntityData(0, EntityDataTypes.BYTE, (byte) 0x40),
-                new EntityData(22, EntityDataTypes.INT, 11546150) //RED
+                new EntityData(0, EntityDataTypes.BYTE, GLOW_METADATA),
+                new EntityData(22, EntityDataTypes.INT, RED_COLOR) //RED
         );
     }
 
-    public List<EntityData> getMatchingData(){
+    public List<EntityData> getBlankData(){
+        int WHITE_COLOR = 16383998;
         return List.of(
-                new EntityData(0, EntityDataTypes.BYTE, (byte) 0x40),
-                new EntityData(22, EntityDataTypes.INT, 16383998) //White
+                new EntityData(0, EntityDataTypes.BYTE, GLOW_METADATA),
+                new EntityData(22, EntityDataTypes.INT, WHITE_COLOR) //White
+
+
         );
     }
 
@@ -128,27 +138,24 @@ public class PreviewPackets {
         );
     }
 
-    public List<EntityData> getGrowData(float size){
+    public List<EntityData> getGrowData(float finalSize, int delta){
+        float centerLocation = -finalSize/2;
         return List.of(
-                new EntityData(9, EntityDataTypes.INT, 1),
-                new EntityData(12, EntityDataTypes.VECTOR3F, new Vector3f(size, size, size)),
-                new EntityData(11, EntityDataTypes.VECTOR3F, new Vector3f(-size/2, -size/2, -size/2))
+                new EntityData(8, EntityDataTypes.INT, -1), // Entity ID or some custom value
+                new EntityData(9, EntityDataTypes.INT, delta), // time in ticks
+                new EntityData(12, EntityDataTypes.VECTOR3F, new Vector3f(finalSize, finalSize, finalSize)), // Updated scale
+                new EntityData(11, EntityDataTypes.VECTOR3F, new Vector3f(centerLocation, centerLocation, centerLocation))
         );
     }
 
     //Animations
 
-    public void appearAnimation(Player player, int entityID, Material material){
-        sendEntityMetaDataPacket(player, entityID, getDefaultData(material));
-        sendEntityMetaDataPacket(player, entityID, getMatchingData());
-        for (int i = 1; i <= 25; i++) {
-            final int tick = i;
-            Bukkit.getScheduler().runTaskLater(CSMultiblock.getCore(), () -> {
-                float scale = tick / 50f;
-                sendEntityMetaDataPacket(player, entityID, getGrowData(scale));
-            }, i);
-        }
+    public void appearAnimation(Player player, int entityID){
 
+        Bukkit.getScheduler().runTaskLater(CSMultiblock.getCore(), () -> {
+            sendEntityMetaDataPacket(player, entityID, getGrowData(0.5f, 20));
+        }, 2);
     }
+
 
 }
