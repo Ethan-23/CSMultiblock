@@ -1,6 +1,6 @@
 name: CSMultiblock
 version: '1.0'
-main: org.evasive.me.cSMultiblock.CSMultiblock
+main: me.evasive.cSMultiblock.CSMultiblock
 api-version: '1.21'
 commands:
   admingive:
