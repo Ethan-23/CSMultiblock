@@ -4,6 +4,8 @@
 
 **Packages Used: [Packet Events](https://github.com/retrooper/packetevents)**
 
+**[Planning Document](https://docs.google.com/document/d/1C60xv5ZpSdKLhPXFUMhw5ufITlyf5FAWHCPE2Ptycn4/edit?usp=sharing)**
+
 Cosmic Sky Multiblocks brings more advanced machineary to the world of skyblock. Once you obtain a multiblock core you can place and build the schematic to get started. Each multiblock has its own functionality and recipes to craft from.
 
 
